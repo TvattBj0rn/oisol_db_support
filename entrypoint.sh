@@ -1,2 +1,2 @@
 #!/bin/sh
-uv run python main.py
+uv run python db_cli.py
