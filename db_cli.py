@@ -3,7 +3,6 @@ import sys
 
 from src.operations import TypeColumns
 
-
 if __name__ == '__main__':
     if len(sys.argv) != 2:
         logging.warning('> At least one parameter must be provided')

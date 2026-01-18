@@ -1,7 +1,7 @@
 import logging
+import sqlite3
 from enum import Enum
 
-import sqlite3
 import polars as pl
 
 
@@ -27,7 +27,7 @@ class TypeColumns:
             self.__edit_columns_typing(conn)
         logging.info('Typing was properly done !')
 
-    def __validate_inputs(self, conn: sqlite3.Connection):
+    def __validate_inputs(self, conn: sqlite3.Connection) -> None:
         cursor = conn.cursor()
         # Validate table
         try:
@@ -41,13 +41,13 @@ class TypeColumns:
         # Validate columns
         try:
             cursor.execute(
-                f'SELECT {','.join(col_name for col_name in self.__columns)} from {self.__table_name}'
+                f'SELECT {','.join(col_name for col_name in self.__columns)} from {self.__table_name}',
             )
         except sqlite3.OperationalError:
             logging.warning('> At least one of the provided columns is incorrect')
             exit()
 
-    def __edit_columns_typing(self, conn: sqlite3.Connection):
+    def __edit_columns_typing(self, conn: sqlite3.Connection) -> None:
         # Retrieve the whole table
         df = pl.read_database(
             query=f'SELECT * FROM {self.__table_name}',
@@ -56,7 +56,7 @@ class TypeColumns:
 
         # Apply type conversion
         df = df.with_columns(
-            (pl.col(column_name).cast(self.__new_cols_type.value).alias(column_name) for column_name in self.__columns)
+            (pl.col(column_name).cast(self.__new_cols_type.value).alias(column_name) for column_name in self.__columns),
         )
 
         # Overwrite existing table with new typed table
