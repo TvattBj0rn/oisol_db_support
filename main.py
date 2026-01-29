@@ -1,7 +1,14 @@
 import sys
+import asyncio
 
 from src.wiki_db.wiki_db_tool import run_db_wiki_update
 
-if __name__ == '__main__':
+
+async def parser() -> None:
+    # sys.argv -> 0 is the binary
     if len(sys.argv) > 1 and sys.argv[1].lower() == 'wiki':
-        run_db_wiki_update()
+        await run_db_wiki_update(*sys.argv[2:])
+
+
+if __name__ == '__main__':
+    asyncio.run(parser())
