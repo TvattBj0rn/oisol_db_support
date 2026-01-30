@@ -1,5 +1,5 @@
-import sys
 import asyncio
+import sys
 
 from src.wiki_db.wiki_db_tool import run_db_wiki_update
 
