@@ -76,7 +76,8 @@ class WikiTablesMirrorRunner:
         async with aiohttp.ClientSession() as session:
             wiki_tables = set(await cls.__get_tables_list(session))
 
-        print(f'Current tables on the db: {tables_in_db}')
+        # Return all retrieved info
+        print(f'Current tables in the db: {tables_in_db}')
         print(f'Available tables on the wiki: {wiki_tables}')
         print(f'Tables on the wiki not in the db (missing): {wiki_tables - tables_in_db}')
         print(f'Tables on the db not on the wiki (deprecated): {tables_in_db - wiki_tables}')
