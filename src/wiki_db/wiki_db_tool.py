@@ -82,6 +82,7 @@ class WikiTablesMirrorRunner:
         print(f'Tables on the wiki not in the db (missing): {wiki_tables - tables_in_db}')
         print(f'Tables on the db not on the wiki (deprecated): {tables_in_db - wiki_tables}')
 
+
 async def run_db_wiki_update(*args) -> None:
     match args[0].lower():
         case 'update':
@@ -90,4 +91,3 @@ async def run_db_wiki_update(*args) -> None:
             WikiTablesMirrorRunner.create_sqlite_database()
         case 'tables':
             await WikiTablesMirrorRunner.view_db_tables()
-
