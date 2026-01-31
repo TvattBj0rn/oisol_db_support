@@ -1,5 +1,6 @@
 import asyncio
 import sqlite3
+from time import sleep
 
 import aiohttp
 import polars as pl
@@ -36,6 +37,7 @@ class WikiTablesMirrorRunner:
         if table_fields_res.status != 200:
             return
         tables_fields = (await table_fields_res.json())['cargofields']
+        sleep(20)
 
         # run cargoquery with all fields with a limit at 1000 (heaviest db has ~500 rows) to ensure all rows are retrieved
         # it seems the max value of limit of 500 is optional, as setting a higher limit works
@@ -45,6 +47,7 @@ class WikiTablesMirrorRunner:
         )
         if table_data_res.status != 200:
             return
+        sleep(20)
 
         # Todo: separate the query & df into two methods: get from wiki /post to db
         # Convert retrieved data to polars df for typing and writing
