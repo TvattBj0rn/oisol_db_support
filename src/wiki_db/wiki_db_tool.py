@@ -66,11 +66,11 @@ class WikiTablesMirrorRunner:
             pass
 
     @classmethod
-    async def view_db_tables(cls):
+    async def view_db_tables(cls) -> None:
         # Retrieve existing tables in db
         with sqlite3.connect(OISOL_HOME_PATH / 'foxhole_wiki_mirror.db') as conn:
             raw_tables = conn.cursor().execute("SELECT name FROM sqlite_master WHERE type='table'").fetchall()
-        tables_in_db = set(table_tup[0] for table_tup in raw_tables)
+        tables_in_db = {table_tup[0] for table_tup in raw_tables}
 
         # Retrieve available tables on the wiki
         async with aiohttp.ClientSession() as session:
