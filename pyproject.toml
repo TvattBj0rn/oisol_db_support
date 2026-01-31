@@ -1,12 +1,13 @@
 [project]
 name = "oisol_db_support"
 dynamic = ["version"]
-requires-python = ">= 3.13"
+requires-python = ">= 3.14"
 dependencies = [
-    "pandas",
-    "polars",
-    "pyarrow",
-    "sqlalchemy",
+    "aiohttp>=3.13.3",
+    "pandas>=3.0.0",
+    "polars>=1.37.1",
+    "pyarrow>=23.0.0",
+    "sqlalchemy>=2.0.46",
 ]
 
 [tool.pytest.ini_options]
