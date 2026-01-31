@@ -13,7 +13,6 @@ select = [
     "SIM", # Flake8-simplify
     "I", # Isort
     "C4", # Comprehensions
-    "T20", # Prints
     "ANN", # Types annotation
     "COM", # Commas handling
     "Q", # Quoting

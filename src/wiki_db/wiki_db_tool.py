@@ -65,6 +65,23 @@ class WikiTablesMirrorRunner:
         with sqlite3.connect(OISOL_HOME_PATH / 'foxhole_wiki_mirror.db') as _conn:
             pass
 
+    @classmethod
+    async def view_db_tables(cls) -> None:
+        # Retrieve existing tables in db
+        with sqlite3.connect(OISOL_HOME_PATH / 'foxhole_wiki_mirror.db') as conn:
+            raw_tables = conn.cursor().execute("SELECT name FROM sqlite_master WHERE type='table'").fetchall()
+        tables_in_db = {table_tup[0] for table_tup in raw_tables}
+
+        # Retrieve available tables on the wiki
+        async with aiohttp.ClientSession() as session:
+            wiki_tables = set(await cls.__get_tables_list(session))
+
+        # Return all retrieved info
+        print(f'Current tables in the db: {tables_in_db}')
+        print(f'Available tables on the wiki: {wiki_tables}')
+        print(f'Tables on the wiki not in the db (missing): {wiki_tables - tables_in_db}')
+        print(f'Tables on the db not on the wiki (deprecated): {tables_in_db - wiki_tables}')
+
 
 async def run_db_wiki_update(*args) -> None:
     match args[0].lower():
@@ -72,3 +89,5 @@ async def run_db_wiki_update(*args) -> None:
             await WikiTablesMirrorRunner.wiki_table_update_process(*args[1:])
         case 'init':
             WikiTablesMirrorRunner.create_sqlite_database()
+        case 'tables':
+            await WikiTablesMirrorRunner.view_db_tables()
