@@ -9,7 +9,7 @@ async def parser() -> None:
     if len(sys.argv) == 1:
         return
 
-    if sys.argv[1].lower() == 'wiki':
+    if sys.argv[1].lower() == '--wiki':
         await run_db_wiki_update(*sys.argv[2:])
 
 
