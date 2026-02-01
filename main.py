@@ -8,7 +8,7 @@ async def parser() -> None:
     # sys.argv -> 0 is the binary
     if len(sys.argv) == 1:
         return
-
+    print(sys.argv)
     if sys.argv[1].lower() == '--wiki':
         await run_db_wiki_update(*sys.argv[2:])
 

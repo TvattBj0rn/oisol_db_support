@@ -84,6 +84,7 @@ class WikiTablesMirrorRunner:
 
 
 async def run_db_wiki_update(*args) -> None:
+    print(args)
     match args[0].lower():
         case 'update':
             await WikiTablesMirrorRunner.wiki_table_update_process(*args[1:])
