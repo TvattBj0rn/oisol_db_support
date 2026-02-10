@@ -1,4 +1,4 @@
-FROM python:3.14
+FROM python:3.14.0-slim
 LABEL authors="Vask"
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 WORKDIR /app
