@@ -9,10 +9,15 @@ async def parser() -> None:
     if len(sys.argv) == 1:
         return
 
-    if sys.argv[1].lower() == '--wiki':
-        await run_db_wiki_update(*sys.argv[2:])
-    if sys.argv[1].lower() == 'test':
-        print(f'This seems to be working: {sys.argv}')
+    match sys.argv[1].lower():
+        case '--wiki':
+            await run_db_wiki_update(*sys.argv[2:])
+        case '--oisol':
+            pass
+        case 'test':
+            print(f'This seems to be working: {sys.argv}')
+        case _:
+            print('Unknown command')
 
 
 if __name__ == '__main__':
