@@ -1,5 +1,5 @@
 # Stage 1
-FROM python:3.14.0-slim
+FROM python:3.14.0-slim as buidler
 LABEL authors="Vask"
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 WORKDIR /app
