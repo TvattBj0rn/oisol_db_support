@@ -1,7 +1,8 @@
 import asyncio
 import sys
 
-from src.wiki_db.wiki_db_tool import run_db_wiki_update
+from src.oisol_db import oisol_db_runner
+from src.wiki_db import run_db_wiki_update
 
 
 async def parser() -> None:
@@ -9,13 +10,15 @@ async def parser() -> None:
     if len(sys.argv) == 1:
         return
 
-    match sys.argv[1].lower():
+    argv_copy = sys.argv.copy()
+
+    match argv_copy[1].lower():
         case '--wiki':
-            await run_db_wiki_update(*sys.argv[2:])
+            await run_db_wiki_update(*argv_copy[2:])
         case '--oisol':
-            pass
+            oisol_db_runner(*argv_copy[2:])
         case 'test':
-            print(f'This seems to be working: {sys.argv}')
+            print(f'This seems to be working: {argv_copy}')
         case _:
             print('Unknown command')
 
