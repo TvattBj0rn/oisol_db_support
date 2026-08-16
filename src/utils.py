@@ -1,8 +1,8 @@
-import pathlib
+from pathlib import Path
 
 import polars as pl
 
-OISOL_HOME_PATH = pathlib.Path('/') / 'oisol'
+OISOL_HOME_PATH = Path.home() / 'AppData' / 'oisol'
 
 POLARS_TYPES_FROM_STRING = {
     'String': pl.String,
