@@ -4,7 +4,7 @@ from time import sleep
 
 import aiohttp
 import polars as pl
-from aiohttp import ClientSession
+from aiohttp import ClientSession, ClientResponse
 
 from src.utils import OISOL_HOME_PATH
 
@@ -31,6 +31,13 @@ class WikiTablesMirrorRunner:
         return None
 
     @classmethod
+    async def __fetch_data_table(cls, session: ClientSession, table_fields: list, table_name, offset: int = 0) -> ClientResponse:
+        return await session.get(
+            cls.__convert_action_to_url(
+                f'action=cargoquery&tables={table_name}&fields={','.join(table_fields)}&offset={offset}&limit=500'),
+        )
+
+    @classmethod
     async def mirror_wiki_table(cls, session: ClientSession, table_name: str) -> None:
         # Retrieve table fields, no special field for "all"
         table_fields_res = await session.get(cls.__convert_action_to_url(f'action=cargofields&table={table_name}'))
@@ -39,19 +46,22 @@ class WikiTablesMirrorRunner:
         tables_fields = (await table_fields_res.json())['cargofields']
         sleep(20)
 
-        # run cargoquery with all fields with a limit at 1000 (heaviest db has ~500 rows) to ensure all rows are retrieved
-        # it seems the max value of limit of 500 is optional, as setting a higher limit works
         table_fields_query = list(tables_fields)
-        table_data_res = await session.get(
-            cls.__convert_action_to_url(f'action=cargoquery&tables={table_name}&fields={','.join(table_fields_query)}&limit=1000'),
-        )
+        table_data_res = await cls.__fetch_data_table(session, table_fields_query, table_name)
+
         if table_data_res.status != 200:
             return
         sleep(20)
-
-        # Todo: separate the query & df into two methods: get from wiki /post to db
-        # Convert retrieved data to polars df for typing and writing
+        # print(await table_data_res.json())
+        # todo: full rework this bandaid solution
         df_table_data = pl.from_records([row['title'] for row in (await table_data_res.json())['cargoquery']])
+        if len(df_table_data) == 500:
+            table_data_res_extended = await cls.__fetch_data_table(session, table_fields_query, table_name, offset=500)
+            if table_data_res_extended.status != 200:
+                return
+            sleep(20)
+            df_table_data_extended = pl.from_records([row['title'] for row in (await table_data_res_extended.json())['cargoquery']])
+            df_table_data = pl.concat([df_table_data, df_table_data_extended], how='vertical_relaxed')
 
         # Todo: make a proper data converter before writing
         df_table_data.write_database(
