@@ -32,10 +32,12 @@ class WikiTablesMirrorRunner:
 
     @classmethod
     async def __fetch_data_table(cls, session: ClientSession, table_fields: list, table_name, offset: int = 0) -> ClientResponse:
-        return await session.get(
-            cls.__convert_action_to_url(
-                f'action=cargoquery&tables={table_name}&fields={','.join(table_fields)}&offset={offset}&limit=500'),
-        )
+        # For the quotes table, name are needed to fetch quotes from entries
+        if table_name == 'quotes':
+            table_fields.append('_pageName')
+
+        endpoint_request = f'action=cargoquery&tables={table_name}&fields={','.join(table_fields)}&offset={offset}&limit=500'
+        return await session.get(cls.__convert_action_to_url(endpoint_request))
 
     @classmethod
     async def mirror_wiki_table(cls, session: ClientSession, table_name: str) -> None:
